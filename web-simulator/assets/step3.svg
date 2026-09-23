@@ -9,7 +9,4 @@
   <rect x="95" y="90" width="50" height="50" rx="6" fill="#2563EB"/>
   <!-- Down Arrow -->
   <polygon points="120,45 110,65 116,65 116,80 124,80 124,65 130,65" fill="#15803D" stroke="#14532D" stroke-width="2"/>
-  <!-- Badge -->
-  <rect x="35" y="45" width="60" height="32" rx="8" fill="#B45309"/>
-  <text x="65" y="67" fill="#FFFFFF" font-family="sans-serif" font-weight="bold" font-size="16" text-anchor="middle">STEP 3</text>
 </svg>

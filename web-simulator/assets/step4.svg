@@ -12,7 +12,4 @@
   <!-- Check Circle -->
   <circle cx="170" cy="115" r="16" fill="#15803D"/>
   <path d="M164,115 l4,4 l9,-9" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <!-- Badge -->
-  <rect x="35" y="45" width="60" height="32" rx="8" fill="#7E22CE"/>
-  <text x="65" y="67" fill="#FFFFFF" font-family="sans-serif" font-weight="bold" font-size="16" text-anchor="middle">STEP 4</text>
 </svg>
