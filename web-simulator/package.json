@@ -1,0 +1,13 @@
+{
+  "name": "dss-workstation-simulator",
+  "version": "1.0.0",
+  "description": "Interactive 10-11 inch Tablet Workstation Simulator for DSS Innovation Project",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx -y serve . -l 3000",
+    "dev": "npx -y serve . -l 3000"
+  },
+  "keywords": ["dss", "workstation", "kiosk", "accessibility", "tablet"],
+  "author": "DSS Innovation Project",
+  "license": "MIT"
+}

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%">
+  <rect x="20" y="30" width="200" height="180" rx="16" fill="#ECFDF5"/>
+  <rect x="10" y="185" width="220" height="8" fill="#CBD5E1"/>
+  <!-- Sealed Box -->
+  <rect x="55" y="95" width="130" height="90" rx="6" fill="#D97706"/>
+  <rect x="112" y="95" width="16" height="90" fill="#F59E0B"/>
+  <!-- Shipping Label White Card on Box -->
+  <rect x="125" y="105" width="52" height="44" rx="4" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+  <!-- Barcode Lines -->
+  <rect x="130" y="112" width="3" height="18" fill="#0F172A"/>
+  <rect x="135" y="112" width="2" height="18" fill="#0F172A"/>
+  <rect x="139" y="112" width="4" height="18" fill="#0F172A"/>
+  <rect x="145" y="112" width="2" height="18" fill="#0F172A"/>
+  <rect x="149" y="112" width="5" height="18" fill="#0F172A"/>
+  <rect x="156" y="112" width="2" height="18" fill="#0F172A"/>
+  <rect x="160" y="112" width="4" height="18" fill="#0F172A"/>
+  <rect x="166" y="112" width="2" height="18" fill="#0F172A"/>
+  <rect x="130" y="135" width="35" height="3" rx="1" fill="#475569"/>
+  <rect x="130" y="141" width="25" height="3" rx="1" fill="#475569"/>
+  <!-- Placement Arrow -->
+  <polygon points="150,55 160,55 160,75 170,75 155,90 140,75 150,75" fill="#2563EB"/>
+  <!-- Badge -->
+  <rect x="35" y="45" width="60" height="32" rx="8" fill="#047857"/>
+  <text x="65" y="67" fill="#FFFFFF" font-family="sans-serif" font-weight="bold" font-size="16" text-anchor="middle">STEP 5</text>
+</svg>

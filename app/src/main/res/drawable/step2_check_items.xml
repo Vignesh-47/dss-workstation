@@ -1,0 +1,51 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="240dp"
+    android:viewportWidth="240"
+    android:viewportHeight="240">
+    <!-- Background Card -->
+    <path
+        android:fillColor="#F0FDF4"
+        android:pathData="M20,30 h200 a16,16 0 0 1 16,16 v148 a16,16 0 0 1 -16,16 h-200 a16,16 0 0 1 -16,-16 v-148 a16,16 0 0 1 16,-16 z" />
+    <!-- Clipboard Outline -->
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M55,60 h80 v125 h-80 z" />
+    <!-- Clipboard Paper -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,65 h70 v115 h-70 z" />
+    <!-- Clip Top -->
+    <path
+        android:fillColor="#475569"
+        android:pathData="M80,50 h30 v15 h-30 z" />
+    <!-- Checklist items on paper -->
+    <path
+        android:fillColor="#16A34A"
+        android:pathData="M70,85 l5,5 l12,-12 l3,3 l-15,15 l-8,-8 z" />
+    <path
+        android:fillColor="#334155"
+        android:pathData="M95,85 h28 v4 h-28 z" />
+    <path
+        android:fillColor="#16A34A"
+        android:pathData="M70,115 l5,5 l12,-12 l3,3 l-15,15 l-8,-8 z" />
+    <path
+        android:fillColor="#334155"
+        android:pathData="M95,115 h28 v4 h-28 z" />
+    <path
+        android:fillColor="#16A34A"
+        android:pathData="M70,145 l5,5 l12,-12 l3,3 l-15,15 l-8,-8 z" />
+    <path
+        android:fillColor="#334155"
+        android:pathData="M95,145 h28 v4 h-28 z" />
+    <!-- Magnifying Glass / Inspection -->
+    <path
+        android:fillColor="#0284C7"
+        android:pathData="M165,110 a25,25 0 1,1 0,50 a25,25 0 1,1 0,-50" />
+    <path
+        android:fillColor="#BAE6FD"
+        android:pathData="M165,116 a19,19 0 1,1 0,38 a19,19 0 1,1 0,-38" />
+    <path
+        android:fillColor="#0369A1"
+        android:pathData="M178,148 L200,172 L190,182 L168,158 Z" />
+</vector>

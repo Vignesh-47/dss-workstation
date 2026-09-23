@@ -1,0 +1,40 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="240dp"
+    android:viewportWidth="240"
+    android:viewportHeight="240">
+    <!-- Background Card -->
+    <path
+        android:fillColor="#EFF6FF"
+        android:pathData="M20,30 h200 a16,16 0 0 1 16,16 v148 a16,16 0 0 1 -16,16 h-200 a16,16 0 0 1 -16,-16 v-148 a16,16 0 0 1 16,-16 z" />
+    <!-- Table Surface -->
+    <path
+        android:fillColor="#CBD5E1"
+        android:pathData="M10,185 h220 v8 h-220 z" />
+    <!-- Cardboard Box Body -->
+    <path
+        android:fillColor="#D97706"
+        android:pathData="M50,110 h90 v75 h-90 z" />
+    <!-- Box Flaps Open -->
+    <path
+        android:fillColor="#B45309"
+        android:pathData="M50,110 L30,90 L65,90 L75,110 Z" />
+    <path
+        android:fillColor="#B45309"
+        android:pathData="M140,110 L160,90 L125,90 L115,110 Z" />
+    <!-- Tape Dispenser -->
+    <path
+        android:fillColor="#2563EB"
+        android:pathData="M165,145 h45 v30 h-45 z" />
+    <path
+        android:fillColor="#60A5FA"
+        android:pathData="M175,130 a15,15 0 1,1 0,30 a15,15 0 1,1 0,-30" />
+    <!-- Bubble Wrap / Materials -->
+    <path
+        android:fillColor="#93C5FD"
+        android:pathData="M70,85 a12,12 0 1,1 24,0 a12,12 0 1,1 24,0 L118,110 L70,110 Z" />
+    <!-- Step Badge -->
+    <path
+        android:fillColor="#1E3A8A"
+        android:pathData="M35,45 h55 v32 h-55 z" />
+</vector>

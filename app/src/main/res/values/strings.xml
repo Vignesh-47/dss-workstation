@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DSS Workstation</string>
+    <string name="stage_today">TODAY</string>
+    <string name="stage_now">NOW</string>
+    <string name="stage_how">HOW</string>
+    <string name="stage_check">CHECK</string>
+    <string name="stage_done">DONE</string>
+    <string name="stage_next">NEXT</string>
+</resources>

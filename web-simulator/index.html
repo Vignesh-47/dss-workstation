@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSS Task-Guidance Workstation Tablet Simulator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Simulator Top Controls Ribbon -->
+  <div class="sim-controls-bar">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <span class="status-badge">10–11" Landscape Tablet Kiosk</span>
+      <span style="font-weight:700;">DSS Innovation Project Workstation</span>
+    </div>
+
+    <!-- Center Mode Switcher -->
+    <div class="sim-mode-toggle">
+      <button class="sim-mode-btn active" id="btn-mode-frame" onclick="setViewMode('frame')">Desk Mount Frame</button>
+      <button class="sim-mode-btn" id="btn-mode-full" onclick="setViewMode('full')">Full Window Tablet</button>
+    </div>
+
+    <!-- Right Controls -->
+    <div style="display:flex; align-items:center; gap:14px;">
+      <button onclick="toggleAudioMute()" id="audio-toggle-btn" style="background:#334155; color:#FFF; border:none; padding:5px 12px; border-radius:6px; cursor:pointer; font-weight:700; font-size:12px;">🔊 Sound: ON</button>
+      <button onclick="toggleFullScreen()" style="background:#334155; color:#FFF; border:none; padding:5px 12px; border-radius:6px; cursor:pointer; font-weight:700; font-size:12px;">⛶ Fullscreen</button>
+    </div>
+  </div>
+
+  <!-- Workspace Area -->
+  <div class="simulator-workspace">
+    <!-- Tablet Frame (Simulates Fixed Workstation Mount) -->
+    <div class="tablet-frame" id="tablet-frame">
+      <div class="tablet-screen">
+
+        <!-- Persistent Workstation Top Bar -->
+        <header class="dss-top-bar">
+          <div class="brand-section">
+            <div class="brand-badge">DSS</div>
+            <div>
+              <div class="brand-title">PACKING STATION</div>
+              <div class="brand-subtitle">Workstation Kiosk Guidance</div>
+            </div>
+          </div>
+
+          <!-- Stage Progress Indicator Pills -->
+          <nav class="stage-pills-row" id="stage-pills"></nav>
+
+          <!-- Staff Gear Button -->
+          <button class="staff-trigger-btn" onclick="openStaffPin()">
+            <span style="font-size:18px;">⚙</span> STAFF
+          </button>
+        </header>
+
+        <!-- Main Learner Stage Screen Content -->
+        <main class="screen-content" id="main-screen"></main>
+
+        <!-- "I Need Help" Assistance Modal Overlay -->
+        <div class="modal-overlay" id="help-modal" style="display:none;">
+          <div class="help-modal-box">
+            <div class="help-alert-badge">⚠ ASSISTANCE REQUESTED</div>
+            <div class="help-phrase-box" id="help-text">"I need help with this step. Please assist me."</div>
+            <p style="font-size:22px; color:var(--dss-text-secondary); text-align:center;">
+              A supervisor or team member will assist you shortly.
+            </p>
+            <div style="display:flex; gap:18px; width:100%;">
+              <button class="dss-btn dss-btn-warning" onclick="speakHelp()" style="flex:1;">
+                🔊 SPEAK OUT LOUD
+              </button>
+              <button class="dss-btn dss-btn-success" onclick="closeHelp()" style="flex:1;">
+                STAFF HANDLED / RESUME ✓
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Staff PIN Keypad Modal Overlay -->
+        <div class="modal-overlay" id="pin-modal" style="display:none;">
+          <div class="pin-pad-box">
+            <div style="font-size:22px; font-weight:900;">🔒 STAFF ACCESS</div>
+            <p style="font-size:15px; color:var(--dss-text-secondary); text-align:center;">Enter 4-digit staff PIN to unlock administration suite</p>
+            <div class="pin-display-row">
+              <div class="pin-dot"></div>
+              <div class="pin-dot"></div>
+              <div class="pin-dot"></div>
+              <div class="pin-dot"></div>
+            </div>
+            <div id="pin-error" style="color:var(--dss-danger); font-weight:800; font-size:15px; display:none;">Incorrect Staff PIN. Please try again.</div>
+            <div class="pin-grid">
+              <button class="pin-key" onclick="pinKey('1')">1</button>
+              <button class="pin-key" onclick="pinKey('2')">2</button>
+              <button class="pin-key" onclick="pinKey('3')">3</button>
+              <button class="pin-key" onclick="pinKey('4')">4</button>
+              <button class="pin-key" onclick="pinKey('5')">5</button>
+              <button class="pin-key" onclick="pinKey('6')">6</button>
+              <button class="pin-key" onclick="pinKey('7')">7</button>
+              <button class="pin-key" onclick="pinKey('8')">8</button>
+              <button class="pin-key" onclick="pinKey('9')">9</button>
+              <button class="pin-key" onclick="pinKey('CLEAR')" style="background:#FEE2E2; color:var(--dss-danger);">C</button>
+              <button class="pin-key" onclick="pinKey('0')">0</button>
+              <button class="pin-key" onclick="pinKey('DEL')">⌫</button>
+            </div>
+            <button class="dss-btn dss-btn-secondary" onclick="closeStaffPin()" style="width:100%; min-height:52px; font-size:17px;">
+              CANCEL
+            </button>
+          </div>
+        </div>
+
+        <!-- Add Task to Today Modal Overlay -->
+        <div class="modal-overlay" id="add-task-modal" style="display:none; z-index:1000;">
+          <div class="pin-pad-box" style="width: 580px; max-width: 95%; text-align:left;">
+            <div style="font-size:24px; font-weight:900; color:var(--dss-text-primary); margin-bottom:4px;">📋 ADD TASK TO TODAY'S SHIFT</div>
+            <p style="font-size:15px; color:var(--dss-text-secondary); margin-bottom:16px;">Give your task a clear name and select the base packing workflow template.</p>
+            
+            <div style="margin-bottom:14px;">
+              <label for="add-task-name-input" style="font-weight:800; font-size:15px; display:block; margin-bottom:6px; color:var(--dss-text-primary);">
+                TASK NAME / LABEL:
+              </label>
+              <input type="text" id="add-task-name-input" placeholder="e.g. Pack Parcel #102, Gift Basket Order, etc." style="width:100%; padding:12px 14px; border-radius:10px; border:2px solid var(--dss-primary); font-size:18px; font-weight:700; color:var(--dss-text-primary); box-sizing:border-box; outline:none;" />
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <label for="add-task-template-select" style="font-weight:800; font-size:15px; display:block; margin-bottom:6px; color:var(--dss-text-primary);">
+                WORKFLOW TEMPLATE:
+              </label>
+              <select id="add-task-template-select" onchange="onTemplateSelectChange()" style="width:100%; padding:12px 14px; border-radius:10px; border:2px solid var(--dss-border); font-size:16px; font-weight:600; background:#FFF; cursor:pointer; box-sizing:border-box;">
+              </select>
+            </div>
+
+            <div style="display:flex; gap:12px; width:100%;">
+              <button class="dss-btn dss-btn-secondary" onclick="closeAddTaskModal()" style="flex:1; min-height:54px; font-size:16px;">
+                CANCEL
+              </button>
+              <button class="dss-btn dss-btn-success" onclick="confirmAddTaskToToday()" style="flex:1; min-height:54px; font-size:17px;">
+                + ADD TO TODAY ✓
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Staff Administration Suite Overlay -->
+        <div class="staff-container" id="staff-dashboard" style="display:none;">
+          <aside class="staff-sidebar">
+            <div>
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+                <span style="font-size:26px;">⚙</span>
+                <div>
+                  <h3 style="font-size:18px; font-weight:900;">STAFF CONTROL</h3>
+                  <p style="font-size:12px; color:var(--dss-text-secondary);">Administration Suite</p>
+                </div>
+              </div>
+              <div class="staff-nav-list">
+                <div class="staff-nav-item active" id="tab-schedule" onclick="setStaffTab('SCHEDULE')">📋 Schedule Organizer</div>
+                <div class="staff-nav-item" id="tab-templates" onclick="setStaffTab('TEMPLATES')">📐 Template Builder</div>
+                <div class="staff-nav-item" id="tab-recovery" onclick="setStaffTab('RECOVERY')">🔄 Task Recovery & Reset</div>
+                <div class="staff-nav-item" id="tab-backup" onclick="setStaffTab('BACKUP')">💾 Backup & Restore</div>
+                <div class="staff-nav-item" id="tab-security" onclick="setStaffTab('SECURITY')">🔐 Security & PIN</div>
+              </div>
+            </div>
+            <button class="dss-btn dss-btn-secondary" onclick="exitStaff()" style="min-height:52px; font-size:15px;">
+              ← EXIT TO WORKSTATION
+            </button>
+          </aside>
+          <main class="staff-content-area" id="staff-content"></main>
+        </div>
+
+        <!-- Toast Notification Container -->
+        <div id="toast-container"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function setViewMode(mode) {
+      const frame = document.getElementById("tablet-frame");
+      const btnFrame = document.getElementById("btn-mode-frame");
+      const btnFull = document.getElementById("btn-mode-full");
+      if (mode === 'full') {
+        frame.classList.add("full-window-mode");
+        btnFull.classList.add("active");
+        btnFrame.classList.remove("active");
+      } else {
+        frame.classList.remove("full-window-mode");
+        btnFrame.classList.add("active");
+        btnFull.classList.remove("active");
+      }
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+  </script>
+</body>
+</html>

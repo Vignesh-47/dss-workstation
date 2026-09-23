@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%">
+  <rect x="20" y="30" width="200" height="180" rx="16" fill="#F3E8FF"/>
+  <rect x="10" y="185" width="220" height="8" fill="#CBD5E1"/>
+  <!-- Sealed Box Body -->
+  <rect x="55" y="95" width="130" height="90" rx="6" fill="#B45309"/>
+  <rect x="55" y="80" width="130" height="20" rx="4" fill="#D97706"/>
+  <!-- Brown / Yellow Packing Tape Center -->
+  <rect x="110" y="75" width="20" height="110" fill="#F59E0B"/>
+  <!-- Hand Tape Roller Sealer -->
+  <rect x="98" y="55" width="44" height="22" rx="4" fill="#2563EB"/>
+  <line x1="120" y1="55" x2="120" y2="40" stroke="#1D4ED8" stroke-width="8" stroke-linecap="round"/>
+  <!-- Check Circle -->
+  <circle cx="170" cy="115" r="16" fill="#15803D"/>
+  <path d="M164,115 l4,4 l9,-9" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Badge -->
+  <rect x="35" y="45" width="60" height="32" rx="8" fill="#7E22CE"/>
+  <text x="65" y="67" fill="#FFFFFF" font-family="sans-serif" font-weight="bold" font-size="16" text-anchor="middle">STEP 4</text>
+</svg>

@@ -1,0 +1,40 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="240dp"
+    android:viewportWidth="240"
+    android:viewportHeight="240">
+    <!-- Background Card -->
+    <path
+        android:fillColor="#F3E8FF"
+        android:pathData="M20,30 h200 a16,16 0 0 1 16,16 v148 a16,16 0 0 1 -16,16 h-200 a16,16 0 0 1 -16,-16 v-148 a16,16 0 0 1 16,-16 z" />
+    <!-- Table Surface -->
+    <path
+        android:fillColor="#CBD5E1"
+        android:pathData="M10,185 h220 v8 h-220 z" />
+    <!-- Closed Box Isometric / Front Body -->
+    <path
+        android:fillColor="#B45309"
+        android:pathData="M55,100 h130 v85 h-130 z" />
+    <!-- Top Flaps Folded -->
+    <path
+        android:fillColor="#D97706"
+        android:pathData="M55,80 h130 v22 h-130 z" />
+    <!-- Heavy Duty Packing Tape Across Center -->
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M110,75 h20 v110 h-20 z" />
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M112,75 h16 v110 h-16 z" />
+    <!-- Hand / Tape Roller sealing motion -->
+    <path
+        android:fillColor="#2563EB"
+        android:pathData="M100,55 h40 v20 h-40 z" />
+    <path
+        android:fillColor="#1D4ED8"
+        android:pathData="M105,45 h30 v10 h-30 z" />
+    <!-- Green Check indicating complete seal -->
+    <path
+        android:fillColor="#16A34A"
+        android:pathData="M175,90 l6,6 l16,-16 l4,4 l-20,20 l-10,-10 z" />
+</vector>

@@ -1,0 +1,42 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="240dp"
+    android:viewportWidth="240"
+    android:viewportHeight="240">
+    <!-- Background Card -->
+    <path
+        android:fillColor="#ECFDF5"
+        android:pathData="M20,30 h200 a16,16 0 0 1 16,16 v148 a16,16 0 0 1 -16,16 h-200 a16,16 0 0 1 -16,-16 v-148 a16,16 0 0 1 16,-16 z" />
+    <!-- Table Surface -->
+    <path
+        android:fillColor="#CBD5E1"
+        android:pathData="M10,185 h220 v8 h-220 z" />
+    <!-- Sealed Box -->
+    <path
+        android:fillColor="#D97706"
+        android:pathData="M55,95 h130 v90 h-130 z" />
+    <!-- Center Tape -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M112,95 h16 v90 h-16 z" />
+    <!-- Shipping Label White Card on Top Right of Box -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M125,108 h50 v42 h-50 z" />
+    <!-- Label Border -->
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M125,108 h50 v2 h-50 z M125,148 h50 v2 h-50 z M125,108 h2 v42 h-2 z M173,108 h2 v42 h-2 z" />
+    <!-- Barcode Stripes on Label -->
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M130,114 h3 v16 h-3 z M135,114 h2 v16 h-2 z M139,114 h4 v16 h-4 z M145,114 h2 v16 h-2 z M149,114 h5 v16 h-5 z M156,114 h2 v16 h-2 z M160,114 h4 v16 h-4 z M166,114 h2 v16 h-2 z" />
+    <!-- Address Text Lines -->
+    <path
+        android:fillColor="#475569"
+        android:pathData="M130,135 h35 v3 h-35 z M130,141 h25 v3 h-25 z" />
+    <!-- Indicator Arrow pointing to label position -->
+    <path
+        android:fillColor="#2563EB"
+        android:pathData="M150,55 h10 v25 h10 l-15,16 l-15,-16 h10 z" />
+</vector>
