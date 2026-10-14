@@ -1,4 +1,22 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/apk",
+      "destination": "https://github.com/Vignesh-47/dss-workstation/releases/download/v1.0.0-apk/dss-workstation-v1.0.apk",
+      "permanent": false
+    },
+    {
+      "source": "/dss-workstation.apk",
+      "destination": "https://github.com/Vignesh-47/dss-workstation/releases/download/v1.0.0-apk/dss-workstation-v1.0.apk",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/download",
+      "destination": "/download.html"
+    }
+  ]
 }

@@ -1,5 +1,6 @@
 package com.dss.workstation.ui.staff
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -35,15 +36,166 @@ fun StaffDashboardScreen(
     val editingTemplate by viewModel.editingTemplate.collectAsState()
     val backupStatus by viewModel.backupStatus.collectAsState()
 
-    Row(modifier = modifier.fillMaxSize().background(DssBackground)) {
-        // Left Navigation Sidebar (280dp wide)
-        Surface(
-            modifier = Modifier
-                .width(300.dp)
-                .fillMaxHeight(),
-            color = Color.White,
-            shadowElevation = 4.dp
-        ) {
+    BoxWithConstraints(modifier = modifier.fillMaxSize().background(DssBackground)) {
+        val isCompact = maxWidth < 700.dp
+
+        if (isCompact) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Compact Top Bar with Exit
+                Surface(
+                    color = Color.White,
+                    shadowElevation = 3.dp,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                        .background(DssPrimary, RoundedCornerShape(8.dp)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_settings),
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "STAFF CONTROL",
+                                    style = DssTypography.titleMedium.copy(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = DssTextPrimary
+                                    )
+                                )
+                            }
+
+                            Button(
+                                onClick = onExitStaff,
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF1F5F9), contentColor = DssTextPrimary),
+                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text("EXIT", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Horizontally scrollable tabs
+                        val navItems = listOf(
+                            Triple(StaffTab.SCHEDULE_ORGANIZER, "Schedule", R.drawable.ic_check),
+                            Triple(StaffTab.TEMPLATES, "Templates", R.drawable.ic_photo),
+                            Triple(StaffTab.LIVE_PREVIEW, "Preview", R.drawable.ic_volume_up),
+                            Triple(StaffTab.TASK_RECOVERY, "Recovery", R.drawable.ic_refresh),
+                            Triple(StaffTab.BACKUP_RESTORE, "Backup", R.drawable.ic_backup),
+                            Triple(StaffTab.KIOSK_SETTINGS, "Kiosk", R.drawable.ic_lock)
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            navItems.forEach { (tab, label, _) ->
+                                val isSelected = currentTab == tab
+                                Surface(
+                                    color = if (isSelected) DssPrimary else Color(0xFFF1F5F9),
+                                    shape = RoundedCornerShape(16.dp),
+                                    modifier = Modifier.clickable { viewModel.selectTab(tab) }
+                                ) {
+                                    Text(
+                                        text = label,
+                                        color = if (isSelected) Color.White else DssTextPrimary,
+                                        fontSize = 13.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Content
+                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    when (currentTab) {
+                        StaffTab.SCHEDULE_ORGANIZER -> {
+                            ScheduleOrganizerScreen(
+                                scheduleList = scheduleList,
+                                allTemplates = templates,
+                                onAddTemplate = { templateId, customTitle -> viewModel.addTemplateToQueue(templateId, customTitle) },
+                                onRenameItem = { scheduleId, newTitle -> viewModel.renameScheduleItem(scheduleId, newTitle) },
+                                onMoveUp = { viewModel.moveScheduleItemUp(it) },
+                                onMoveDown = { viewModel.moveScheduleItemDown(it) },
+                                onRemoveItem = { viewModel.removeScheduleItem(it) },
+                                onClearSchedule = { viewModel.clearDailySchedule() }
+                            )
+                        }
+                        StaffTab.TEMPLATES -> {
+                            TemplateBuilderScreen(
+                                editingTemplate = editingTemplate,
+                                allTemplates = templates,
+                                onStartNew = { viewModel.startNewTemplate() },
+                                onEditTemplate = { viewModel.editTemplate(it) },
+                                onDuplicateTemplate = { viewModel.duplicateTemplate(it) },
+                                onDeleteTemplate = { viewModel.deleteTemplate(it) },
+                                onCancelEditing = { viewModel.cancelTemplateEditing() },
+                                onSaveTemplate = { title, desc, estMins, help, comp, steps, check ->
+                                    viewModel.saveEditingTemplate(title, desc, estMins, help, comp, steps, check)
+                                }
+                            )
+                        }
+                        StaffTab.LIVE_PREVIEW -> {
+                            LivePreviewScreen(
+                                templates = templates,
+                                ttsHelper = ttsHelper
+                            )
+                        }
+                        StaffTab.TASK_RECOVERY -> {
+                            TaskRecoveryScreen(
+                                scheduleList = scheduleList,
+                                onResetToStep1 = { viewModel.resetScheduleToStep1(it) },
+                                onJumpToStep = { id, step -> viewModel.jumpScheduleToStep(id, step) },
+                                onForceComplete = { viewModel.forceCompleteSchedule(it) }
+                            )
+                        }
+                        StaffTab.BACKUP_RESTORE -> {
+                            BackupRestoreScreen(
+                                statusMessage = backupStatus,
+                                onExport = { viewModel.exportBackup(it) },
+                                onImport = { viewModel.importBackup(it) },
+                                onClearStatus = { viewModel.clearBackupStatus() }
+                            )
+                        }
+                        StaffTab.KIOSK_SETTINGS -> {
+                            KioskSettingsScreen(
+                                securityManager = viewModel.securityManager,
+                                isLockTaskActive = viewModel.isLockTaskActive.collectAsState().value,
+                                onToggleLockTask = { active -> viewModel.setLockTaskActive(active) }
+                            )
+                        }
+                    }
+                }
+            }
+        } else {
+            Row(modifier = Modifier.fillMaxSize()) {
+                Surface(
+                    modifier = Modifier
+                        .width(300.dp)
+                        .fillMaxHeight(),
+                    color = Color.White,
+                    shadowElevation = 4.dp
+                ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -212,5 +364,8 @@ fun StaffDashboardScreen(
                 }
             }
         }
+    }
+}
+
     }
 }

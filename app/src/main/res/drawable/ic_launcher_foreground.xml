@@ -3,10 +3,37 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Clipboard Body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,26 h40 c3.3,0 6,2.7 6,6 v50 c0,3.3 -2.7,6 -6,6 H34 c-3.3,0 -6,-2.7 -6,-6 V32 c0,-3.3 2.7,-6 6,-6 z"/>
+    <!-- Clipboard Top Clip -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M44,22 h20 c1.5,0 3,1.5 3,3 v5 H41 v-5 c0,-1.5 1.5,-3 3,-3 z"/>
+    <!-- Checklist items (Lines) -->
     <path
         android:fillColor="#1E3A8A"
-        android:pathData="M30,36h48v36H30z"/>
+        android:pathData="M38,38 h24 v3 H38 z"/>
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M38,46 h32 v2.5 H38 z"/>
+    <path
+        android:fillColor="#CBD5E1"
+        android:pathData="M38,53 h28 v2.5 H38 z"/>
+    <!-- Packing Box -->
+    <path
+        android:fillColor="#D97706"
+        android:pathData="M52,60 h24 c2,0 3.5,1.5 3.5,3.5 v18 c0,2 -1.5,3.5 -3.5,3.5 H52 c-2,0 -3.5,-1.5 -3.5,-3.5 v-18 c0,-2 1.5,-3.5 3.5,-3.5 z"/>
+    <!-- Box Tape -->
     <path
         android:fillColor="#FBBF24"
-        android:pathData="M48,36h12v36H48z"/>
+        android:pathData="M62,60 h4 v25 h-4 z"/>
+    <!-- Task Checkmark Circle Badge -->
+    <path
+        android:fillColor="#F0FDF4"
+        android:pathData="M37,70 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0"/>
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M30,70 l4.5,4.5 l10.5,-10.5 l2,2 l-12.5,12.5 l-6.5,-6.5 z"/>
 </vector>

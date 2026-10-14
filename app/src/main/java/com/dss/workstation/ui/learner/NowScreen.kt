@@ -44,128 +44,158 @@ fun NowScreen(
     val finalStep = activeSchedule?.templateWithDetails?.sortedSteps?.lastOrNull()
     val totalSteps = activeSchedule?.templateWithDetails?.sortedSteps?.size ?: 0
 
-    Column(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .background(DssBackground)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 48.dp, vertical = 28.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        // Top Header
+        val isCompact = maxWidth < 700.dp
+
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "CURRENT TASK",
-                style = DssTypography.headlineLarge.copy(
-                    fontSize = 28.sp,
-                    color = DssPrimary,
-                    fontWeight = FontWeight.ExtraBold
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = template?.title ?: "No Active Task",
-                style = DssTypography.displayLarge.copy(
-                    fontSize = 44.sp,
-                    fontWeight = FontWeight.Black,
-                    color = DssTextPrimary,
-                    textAlign = TextAlign.Center
-                )
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                text = "Total $totalSteps guided steps • Est. ${template?.estimatedMinutes ?: 10} minutes",
-                style = DssTypography.bodyMedium.copy(
-                    fontSize = 22.sp,
-                    color = DssTextSecondary
-                )
-            )
-        }
-
-        // Center: Large Preview Outcome Card
-        Card(
             modifier = Modifier
-                .fillMaxWidth(0.65f)
-                .height(300.dp),
-            shape = RoundedCornerShape(24.dp),
-            border = BorderStroke(3.dp, Color(0xFFCBD5E1)),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = if (isCompact) 18.dp else 48.dp, vertical = if (isCompact) 16.dp else 28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(if (isCompact) 14.dp else 20.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
+            // Top Header
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // If final step has a custom or drawable image, preview it
-                val imagePath = finalStep?.imagePath ?: "res:drawable/step5_attach_label"
-                val drawableId = photoStorage.resolveDrawableResId(imagePath)
-                val file = photoStorage.getFileFromRelativePath(imagePath)
+                Text(
+                    text = "CURRENT TASK",
+                    style = DssTypography.headlineLarge.copy(
+                        fontSize = if (isCompact) 20.sp else 28.sp,
+                        color = DssPrimary,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                )
+                Spacer(modifier = Modifier.height(if (isCompact) 4.dp else 8.dp))
+                Text(
+                    text = template?.title ?: "No Active Task",
+                    style = DssTypography.displayLarge.copy(
+                        fontSize = if (isCompact) 26.sp else 44.sp,
+                        fontWeight = FontWeight.Black,
+                        color = DssTextPrimary,
+                        textAlign = TextAlign.Center
+                    )
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Total $totalSteps guided steps • Est. ${template?.estimatedMinutes ?: 10} minutes",
+                    style = DssTypography.bodyMedium.copy(
+                        fontSize = if (isCompact) 15.sp else 22.sp,
+                        color = DssTextSecondary
+                    )
+                )
+            }
 
-                if (drawableId != null) {
-                    Image(
-                        painter = painterResource(id = drawableId),
-                        contentDescription = "Finished task preview",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Fit
+            // Center: Large Preview Outcome Card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(if (isCompact) 0.95f else 0.65f)
+                    .height(if (isCompact) 210.dp else 300.dp),
+                shape = RoundedCornerShape(20.dp),
+                border = BorderStroke(if (isCompact) 2.dp else 3.dp, Color(0xFFCBD5E1)),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    val imagePath = finalStep?.imagePath ?: "res:drawable/step5_attach_label"
+                    val drawableId = photoStorage.resolveDrawableResId(imagePath)
+                    val file = photoStorage.getFileFromRelativePath(imagePath)
+
+                    if (drawableId != null) {
+                        Image(
+                            painter = painterResource(id = drawableId),
+                            contentDescription = "Finished task preview",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(14.dp)),
+                            contentScale = ContentScale.Fit
+                        )
+                    } else if (file != null) {
+                        AsyncImage(
+                            model = file,
+                            contentDescription = "Finished task preview",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(14.dp)),
+                            contentScale = ContentScale.Fit
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.step5_attach_label),
+                            contentDescription = "Finished task preview",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(14.dp)),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                }
+            }
+
+            // Bottom Action Controls
+            if (isCompact) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(0.95f),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    DssBigButton(
+                        text = "START TASK NOW",
+                        onClick = onStartTask,
+                        variant = DssButtonVariant.SUCCESS,
+                        minHeight = 58.dp,
+                        modifier = Modifier.fillMaxWidth(),
+                        iconResId = R.drawable.ic_arrow_forward,
+                        fontSize = 18.sp
                     )
-                } else if (file != null) {
-                    AsyncImage(
-                        model = file,
-                        contentDescription = "Finished task preview",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Fit
+                    DssBigButton(
+                        text = "TODAY'S SCHEDULE",
+                        onClick = onBackToToday,
+                        variant = DssButtonVariant.SECONDARY,
+                        minHeight = 52.dp,
+                        modifier = Modifier.fillMaxWidth(),
+                        iconResId = R.drawable.ic_arrow_back,
+                        fontSize = 16.sp
                     )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.step5_attach_label),
-                        contentDescription = "Finished task preview",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp)),
-                        contentScale = ContentScale.Fit
+                }
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(0.85f),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DssBigButton(
+                        text = "TODAY'S SCHEDULE",
+                        onClick = onBackToToday,
+                        variant = DssButtonVariant.SECONDARY,
+                        minHeight = 84.dp,
+                        modifier = Modifier.weight(0.35f),
+                        iconResId = R.drawable.ic_arrow_back,
+                        fontSize = 22.sp
+                    )
+
+                    DssBigButton(
+                        text = "START TASK NOW",
+                        onClick = onStartTask,
+                        variant = DssButtonVariant.SUCCESS,
+                        minHeight = 84.dp,
+                        modifier = Modifier.weight(0.65f),
+                        iconResId = R.drawable.ic_arrow_forward,
+                        fontSize = 26.sp
                     )
                 }
             }
-        }
 
-        // Bottom Action Controls
-        Row(
-            modifier = Modifier.fillMaxWidth(0.85f),
-            horizontalArrangement = Arrangement.spacedBy(24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Secondary button to check today schedule
-            DssBigButton(
-                text = "TODAY'S SCHEDULE",
-                onClick = onBackToToday,
-                variant = DssButtonVariant.SECONDARY,
-                minHeight = 84.dp,
-                minWidth = 220.dp,
-                modifier = Modifier.weight(0.35f),
-                iconResId = R.drawable.ic_arrow_back,
-                fontSize = 22.sp
-            )
-
-            // Giant green target button: "START" (Height >= 80dp, Width >= 280dp)
-            DssBigButton(
-                text = "START TASK NOW",
-                onClick = onStartTask,
-                variant = DssButtonVariant.SUCCESS,
-                minHeight = DssDimens.GiantButtonHeight, // 92dp
-                minWidth = DssDimens.GiantButtonMinWidth, // 280dp
-                modifier = Modifier.weight(0.65f),
-                iconResId = R.drawable.ic_check,
-                fontSize = 30.sp
-            )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

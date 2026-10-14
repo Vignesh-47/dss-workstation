@@ -54,7 +54,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        // Adaptive orientation: default to sensor landscape on tablets, or allow free rotation on phones
+        val isTablet = resources.configuration.smallestScreenWidthDp >= 600
+        requestedOrientation = if (isTablet) {
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
 
         // Enable Immersive Sticky Mode (hide status & navigation bars for kiosk experience)
         hideSystemBars()

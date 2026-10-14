@@ -41,7 +41,8 @@ fun StaffPinDialog(
     ) {
         Box(
             modifier = Modifier
-                .width(520.dp)
+                .fillMaxWidth(0.92f)
+                .widthIn(max = 480.dp)
                 .wrapContentHeight()
                 .background(Color.White, RoundedCornerShape(DssDimens.DialogCornerRadius))
                 .border(

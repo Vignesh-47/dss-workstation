@@ -38,7 +38,8 @@ fun HelpDialog(
         // High visibility Amber Alert Box covering center tablet screen
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.85f)
+                .fillMaxWidth(0.92f)
+                .widthIn(max = 680.dp)
                 .wrapContentHeight()
                 .background(Color.White, RoundedCornerShape(DssDimens.DialogCornerRadius))
                 .border(

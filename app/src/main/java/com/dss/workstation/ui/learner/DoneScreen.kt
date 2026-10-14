@@ -35,110 +35,117 @@ fun DoneScreen(
     onConfirmAndNext: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .background(DssBackground)
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 48.dp, vertical = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        // Congratulatory Header & Large Green Checkmark
+        val isCompact = maxWidth < 700.dp
+
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(96.dp)
-                    .clip(CircleShape)
-                    .background(DssSuccess),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_check),
-                    contentDescription = "Task complete",
-                    tint = Color.White,
-                    modifier = Modifier.size(64.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "TASK COMPLETE!",
-                style = DssTypography.displayLarge.copy(
-                    fontSize = 42.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color(0xFF14532D)
-                )
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Please call your supervisor for inspection and handover.",
-                style = DssTypography.headlineLarge.copy(
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = DssTextPrimary,
-                    textAlign = TextAlign.Center
-                )
-            )
-        }
-
-        // Suggested reporting phrase card with TTS
-        Card(
             modifier = Modifier
-                .fillMaxWidth(0.85f),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            border = BorderStroke(3.dp, Color(0xFF86EFAC)),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = if (isCompact) 16.dp else 48.dp, vertical = if (isCompact) 16.dp else 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(if (isCompact) 14.dp else 20.dp)
         ) {
+            // Congratulatory Header & Checkmark
             Column(
-                modifier = Modifier.padding(28.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(18.dp)
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Box(
+                    modifier = Modifier
+                        .size(if (isCompact) 64.dp else 96.dp)
+                        .clip(CircleShape)
+                        .background(DssSuccess),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_check),
+                        contentDescription = "Task complete",
+                        tint = Color.White,
+                        modifier = Modifier.size(if (isCompact) 40.dp else 64.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(if (isCompact) 8.dp else 16.dp))
+
                 Text(
-                    text = "WHAT TO SAY TO YOUR SUPERVISOR:",
-                    style = DssTypography.labelLarge.copy(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF15803D)
+                    text = "TASK COMPLETE!",
+                    style = DssTypography.displayLarge.copy(
+                        fontSize = if (isCompact) 26.sp else 42.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color(0xFF14532D)
                     )
                 )
 
+                Spacer(modifier = Modifier.height(4.dp))
+
                 Text(
-                    text = "\"$completionPhrase\"",
-                    style = DssTypography.titleLarge.copy(
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
+                    text = "Please call your supervisor for inspection and handover.",
+                    style = DssTypography.headlineLarge.copy(
+                        fontSize = if (isCompact) 16.sp else 28.sp,
+                        fontWeight = FontWeight.SemiBold,
                         color = DssTextPrimary,
                         textAlign = TextAlign.Center
                     )
                 )
-
-                AudioSpeakButton(
-                    onClick = onSpeakCompletionPhrase,
-                    isSpeaking = isSpeaking,
-                    text = "PLAY REPORTING PHRASE ALOUD",
-                    modifier = Modifier.fillMaxWidth(0.7f)
-                )
             }
-        }
 
-        // Single large button at bottom: "CONFIRM & GO TO NEXT"
-        DssBigButton(
-            text = "CONFIRM & GO TO NEXT",
-            onClick = onConfirmAndNext,
-            variant = DssButtonVariant.SUCCESS,
-            minHeight = DssDimens.GiantButtonHeight, // 92dp
-            minWidth = 380.dp,
-            modifier = Modifier.fillMaxWidth(0.85f),
-            iconResId = R.drawable.ic_check,
-            fontSize = 28.sp
-        )
+            // Suggested reporting phrase card with TTS
+            Card(
+                modifier = Modifier.fillMaxWidth(if (isCompact) 0.98f else 0.85f),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                border = BorderStroke(if (isCompact) 2.dp else 3.dp, Color(0xFF86EFAC)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(if (isCompact) 16.dp else 28.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(if (isCompact) 12.dp else 18.dp)
+                ) {
+                    Text(
+                        text = "WHAT TO SAY TO YOUR SUPERVISOR:",
+                        style = DssTypography.labelLarge.copy(
+                            fontSize = if (isCompact) 14.sp else 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF15803D)
+                        )
+                    )
+
+                    Text(
+                        text = ""$completionPhrase"",
+                        style = DssTypography.titleLarge.copy(
+                            fontSize = if (isCompact) 20.sp else 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = DssTextPrimary,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+
+                    AudioSpeakButton(
+                        onClick = onSpeakCompletionPhrase,
+                        isSpeaking = isSpeaking,
+                        text = "PLAY REPORTING PHRASE ALOUD",
+                        modifier = Modifier.fillMaxWidth(if (isCompact) 1f else 0.7f)
+                    )
+                }
+            }
+
+            // Single large button: "CONFIRM & GO TO NEXT"
+            DssBigButton(
+                text = "CONFIRM & GO TO NEXT",
+                onClick = onConfirmAndNext,
+                variant = DssButtonVariant.SUCCESS,
+                minHeight = if (isCompact) 56.dp else 92.dp,
+                modifier = Modifier.fillMaxWidth(if (isCompact) 0.98f else 0.85f),
+                iconResId = R.drawable.ic_check,
+                fontSize = if (isCompact) 18.sp else 28.sp
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
