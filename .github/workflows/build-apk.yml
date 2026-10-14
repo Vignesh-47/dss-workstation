@@ -23,14 +23,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle
+      - name: Setup Gradle 8.10.2
         uses: gradle/actions/setup-gradle@v4
-
-      - name: Make Gradlew Executable
-        run: chmod +x ./gradlew
+        with:
+          gradle-version: '8.10.2'
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --no-daemon
+        run: gradle assembleDebug --stacktrace --no-daemon
 
       - name: Rename APK for Sharing
         run: |
