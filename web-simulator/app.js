@@ -113,14 +113,94 @@ function showToast(msg) {
   }, 2500);
 }
 
-// Web Speech API Engine
+// ==========================================
+// Locked-in Single Human Male Voice Engine
+// ==========================================
+let humanMaleVoice = null;
+const voicePitch = 0.98; // Warm, natural human male pitch
+const voiceRate = 0.94;  // Natural, calm human conversational pacing
+
+function initHumanVoice() {
+  if (!('speechSynthesis' in window)) return;
+
+  function pickSingleHumanMaleVoice() {
+    const allVoices = window.speechSynthesis.getVoices() || [];
+    if (allVoices.length === 0) return;
+
+    // Filter for English voices
+    const enVoices = allVoices.filter(v => v.lang.startsWith("en"));
+    const pool = enVoices.length > 0 ? enVoices : allVoices;
+
+    // Priority order for NATURAL / NEURAL HUMAN MALE voices:
+    // 1. Microsoft Guy Online (Natural) - authentic warm human male
+    // 2. Microsoft Christopher Online (Natural)
+    // 3. Microsoft Ryan Online (Natural)
+    // 4. Google US English Male / en-US-Neural2-J / en-US-Wavenet-B / en-US-Wavenet-D
+    // 5. Apple Daniel / Oliver / Alex
+    // 6. Any English voice tagged as male/natural
+    const maleNeuralKeywords = [
+      "guy online (natural)",
+      "guy (natural)",
+      "guy",
+      "christopher online (natural)",
+      "christopher",
+      "ryan online (natural)",
+      "ryan",
+      "daniel",
+      "google us english male",
+      "male"
+    ];
+
+    for (const kw of maleNeuralKeywords) {
+      const match = pool.find(v => v.name.toLowerCase().includes(kw));
+      if (match) {
+        humanMaleVoice = match;
+        break;
+      }
+    }
+
+    // Fallback: any modern neural/natural voice
+    if (!humanMaleVoice) {
+      humanMaleVoice = pool.find(v => 
+        (v.name.toLowerCase().includes("natural") || v.name.toLowerCase().includes("neural")) &&
+        !v.name.toLowerCase().includes("desktop")
+      );
+    }
+
+    // Final fallback: any non-desktop voice
+    if (!humanMaleVoice) {
+      humanMaleVoice = pool.find(v => !v.name.toLowerCase().includes("desktop")) || pool[0];
+    }
+
+    console.log("Locked in Single Human Male Voice:", humanMaleVoice?.name);
+  }
+
+  pickSingleHumanMaleVoice();
+  if (typeof window.speechSynthesis.onvoiceschanged !== "undefined") {
+    window.speechSynthesis.onvoiceschanged = pickSingleHumanMaleVoice;
+  }
+}
+
 function speakText(text) {
   if (isAudioMuted || !('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
+
+  // If voices have not resolved yet, pick best available candidate
+  if (!humanMaleVoice && window.speechSynthesis.getVoices().length > 0) {
+    const all = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith("en"));
+    humanMaleVoice = all.find(v => /guy|christopher|ryan|daniel|male|natural/i.test(v.name)) || all[0];
+  }
+
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = 0.88; // Tuned for cognitive accessibility
-  utterance.pitch = 1.0;
-  utterance.lang = "en-US";
+  if (humanMaleVoice) {
+    utterance.voice = humanMaleVoice;
+    utterance.lang = humanMaleVoice.lang;
+  } else {
+    utterance.lang = "en-US";
+  }
+
+  utterance.rate = voiceRate;   // 0.94 - human conversational pace
+  utterance.pitch = voicePitch; // 0.98 - natural male warmth
 
   utterance.onstart = () => {
     isSpeaking = true;
@@ -130,7 +210,8 @@ function speakText(text) {
     isSpeaking = false;
     updateAudioBtnState();
   };
-  utterance.onerror = () => {
+  utterance.onerror = (e) => {
+    console.warn("TTS playback note:", e);
     isSpeaking = false;
     updateAudioBtnState();
   };
@@ -999,6 +1080,8 @@ function exitStaff() {
 }
 
 // Initial render
+initHumanVoice();
 window.addEventListener("DOMContentLoaded", () => {
+  initHumanVoice();
   renderApp();
 });

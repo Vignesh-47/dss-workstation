@@ -35,9 +35,29 @@ class TtsHelper(context: Context) : TextToSpeech.OnInitListener {
                     return
                 }
             }
-            // Speech rate tuned for clear cognitive accessibility (0.88f)
-            tts?.setSpeechRate(0.88f)
-            tts?.setPitch(1.0f)
+            // Auto-select single high quality human male voice if available
+            try {
+                val maleVoice = tts?.voices?.firstOrNull { voice ->
+                    voice.locale.language == (tts?.language?.language ?: "en") &&
+                    !voice.isNetworkConnectionRequired &&
+                    (voice.name.contains("male", ignoreCase = true) || 
+                     voice.name.contains("guy", ignoreCase = true) || 
+                     voice.name.contains("en-us-x-sfg", ignoreCase = true))
+                } ?: tts?.voices?.firstOrNull { voice ->
+                    voice.locale.language == "en" && 
+                    voice.quality >= android.speech.tts.Voice.QUALITY_HIGH
+                }
+                if (maleVoice != null) {
+                    tts?.voice = maleVoice
+                    Log.d(TAG, "Locked in single human male voice: ${maleVoice.name}")
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Voice selection fallback", e)
+            }
+
+            // Natural human conversational pacing (0.94f) and warm male pitch (0.98f)
+            tts?.setSpeechRate(0.94f)
+            tts?.setPitch(0.98f)
             tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {
                     _isSpeaking.value = true
