@@ -67,7 +67,7 @@ fun StaffDashboardScreen(
                     onEdit = { viewModel.editTemplate(it) },
                     onDuplicate = { viewModel.duplicateTemplate(it) },
                     onDelete = { viewModel.deleteTemplate(it) },
-                    onSave = { title, desc, mins, help, comp, steps, check ->
+                    onSaveTemplate = { title, desc, mins, help, comp, steps, check ->
                         viewModel.saveEditingTemplate(title, desc, mins, help, comp, steps, check)
                     },
                     onCancelEditing = { viewModel.cancelTemplateEditing() }
