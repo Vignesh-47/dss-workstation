@@ -1,8 +1,8 @@
 package com.dss.workstation.ui.staff
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,18 +36,90 @@ fun StaffDashboardScreen(
     val editingTemplate by viewModel.editingTemplate.collectAsState()
     val backupStatus by viewModel.backupStatus.collectAsState()
 
+    val navItems = listOf(
+        Triple(StaffTab.SCHEDULE_ORGANIZER, "Schedule Organizer", R.drawable.ic_check),
+        Triple(StaffTab.TEMPLATES, "Template Builder", R.drawable.ic_photo),
+        Triple(StaffTab.LIVE_PREVIEW, "Live Preview", R.drawable.ic_volume_up),
+        Triple(StaffTab.TASK_RECOVERY, "Task Recovery", R.drawable.ic_refresh),
+        Triple(StaffTab.BACKUP_RESTORE, "Backup & Restore", R.drawable.ic_backup),
+        Triple(StaffTab.KIOSK_SETTINGS, "Kiosk & Security", R.drawable.ic_lock)
+    )
+
+    val contentSlot = @Composable {
+        when (currentTab) {
+            StaffTab.SCHEDULE_ORGANIZER -> {
+                ScheduleOrganizerScreen(
+                    scheduleList = scheduleList,
+                    allTemplates = templates,
+                    onAddTemplate = { templateId, customTitle -> viewModel.addTemplateToQueue(templateId, customTitle) },
+                    onRenameItem = { scheduleId, newTitle -> viewModel.renameScheduleItem(scheduleId, newTitle) },
+                    onMoveUp = { viewModel.moveScheduleItemUp(it) },
+                    onMoveDown = { viewModel.moveScheduleItemDown(it) },
+                    onRemoveItem = { viewModel.removeScheduleItem(it) },
+                    onClearSchedule = { viewModel.clearDailySchedule() }
+                )
+            }
+            StaffTab.TEMPLATES -> {
+                TemplateBuilderScreen(
+                    templates = templates,
+                    editingTemplate = editingTemplate,
+                    onStartNew = { viewModel.startNewTemplate() },
+                    onEdit = { viewModel.editTemplate(it) },
+                    onDuplicate = { viewModel.duplicateTemplate(it) },
+                    onDelete = { viewModel.deleteTemplate(it) },
+                    onSave = { title, desc, mins, help, comp, steps, check ->
+                        viewModel.saveEditingTemplate(title, desc, mins, help, comp, steps, check)
+                    },
+                    onCancelEditing = { viewModel.cancelTemplateEditing() }
+                )
+            }
+            StaffTab.LIVE_PREVIEW -> {
+                LivePreviewScreen(
+                    templates = templates,
+                    ttsHelper = ttsHelper,
+                    onExitPreview = { viewModel.selectTab(StaffTab.TEMPLATES) }
+                )
+            }
+            StaffTab.TASK_RECOVERY -> {
+                TaskRecoveryScreen(
+                    scheduleList = scheduleList,
+                    onResetToStep1 = { viewModel.resetScheduleToStep1(it) },
+                    onJumpToStep = { id, step -> viewModel.jumpScheduleToStep(id, step) },
+                    onForceComplete = { viewModel.forceCompleteSchedule(it) }
+                )
+            }
+            StaffTab.BACKUP_RESTORE -> {
+                BackupRestoreScreen(
+                    backupStatus = backupStatus,
+                    onExport = { viewModel.exportBackup(it) },
+                    onImport = { viewModel.importBackup(it) },
+                    onClearStatus = { viewModel.clearBackupStatus() }
+                )
+            }
+            StaffTab.KIOSK_SETTINGS -> {
+                KioskSettingsScreen(
+                    securityManager = viewModel.securityManager
+                )
+            }
+        }
+    }
+
     BoxWithConstraints(modifier = modifier.fillMaxSize().background(DssBackground)) {
         val isCompact = maxWidth < 700.dp
 
         if (isCompact) {
+            // Mobile Phone Layout: Top Nav + Content Below
             Column(modifier = Modifier.fillMaxSize()) {
-                // Compact Top Bar with Exit
                 Surface(
                     color = Color.White,
                     shadowElevation = 3.dp,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -69,7 +141,7 @@ fun StaffDashboardScreen(
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "STAFF CONTROL",
+                                    text = "STAFF SUITE",
                                     style = DssTypography.titleMedium.copy(
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Black,
@@ -80,8 +152,11 @@ fun StaffDashboardScreen(
 
                             Button(
                                 onClick = onExitStaff,
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF1F5F9), contentColor = DssTextPrimary),
-                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFFF1F5F9),
+                                    contentColor = DssTextPrimary
+                                ),
+                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                                 shape = RoundedCornerShape(8.dp)
                             ) {
                                 Text("EXIT", fontSize = 13.sp, fontWeight = FontWeight.Bold)
@@ -89,16 +164,6 @@ fun StaffDashboardScreen(
                         }
 
                         Spacer(modifier = Modifier.height(8.dp))
-
-                        // Horizontally scrollable tabs
-                        val navItems = listOf(
-                            Triple(StaffTab.SCHEDULE_ORGANIZER, "Schedule", R.drawable.ic_check),
-                            Triple(StaffTab.TEMPLATES, "Templates", R.drawable.ic_photo),
-                            Triple(StaffTab.LIVE_PREVIEW, "Preview", R.drawable.ic_volume_up),
-                            Triple(StaffTab.TASK_RECOVERY, "Recovery", R.drawable.ic_refresh),
-                            Triple(StaffTab.BACKUP_RESTORE, "Backup", R.drawable.ic_backup),
-                            Triple(StaffTab.KIOSK_SETTINGS, "Kiosk", R.drawable.ic_lock)
-                        )
 
                         Row(
                             modifier = Modifier
@@ -126,68 +191,12 @@ fun StaffDashboardScreen(
                     }
                 }
 
-                // Content
                 Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                    when (currentTab) {
-                        StaffTab.SCHEDULE_ORGANIZER -> {
-                            ScheduleOrganizerScreen(
-                                scheduleList = scheduleList,
-                                allTemplates = templates,
-                                onAddTemplate = { templateId, customTitle -> viewModel.addTemplateToQueue(templateId, customTitle) },
-                                onRenameItem = { scheduleId, newTitle -> viewModel.renameScheduleItem(scheduleId, newTitle) },
-                                onMoveUp = { viewModel.moveScheduleItemUp(it) },
-                                onMoveDown = { viewModel.moveScheduleItemDown(it) },
-                                onRemoveItem = { viewModel.removeScheduleItem(it) },
-                                onClearSchedule = { viewModel.clearDailySchedule() }
-                            )
-                        }
-                        StaffTab.TEMPLATES -> {
-                            TemplateBuilderScreen(
-                                editingTemplate = editingTemplate,
-                                allTemplates = templates,
-                                onStartNew = { viewModel.startNewTemplate() },
-                                onEditTemplate = { viewModel.editTemplate(it) },
-                                onDuplicateTemplate = { viewModel.duplicateTemplate(it) },
-                                onDeleteTemplate = { viewModel.deleteTemplate(it) },
-                                onCancelEditing = { viewModel.cancelTemplateEditing() },
-                                onSaveTemplate = { title, desc, estMins, help, comp, steps, check ->
-                                    viewModel.saveEditingTemplate(title, desc, estMins, help, comp, steps, check)
-                                }
-                            )
-                        }
-                        StaffTab.LIVE_PREVIEW -> {
-                            LivePreviewScreen(
-                                templates = templates,
-                                ttsHelper = ttsHelper
-                            )
-                        }
-                        StaffTab.TASK_RECOVERY -> {
-                            TaskRecoveryScreen(
-                                scheduleList = scheduleList,
-                                onResetToStep1 = { viewModel.resetScheduleToStep1(it) },
-                                onJumpToStep = { id, step -> viewModel.jumpScheduleToStep(id, step) },
-                                onForceComplete = { viewModel.forceCompleteSchedule(it) }
-                            )
-                        }
-                        StaffTab.BACKUP_RESTORE -> {
-                            BackupRestoreScreen(
-                                statusMessage = backupStatus,
-                                onExport = { viewModel.exportBackup(it) },
-                                onImport = { viewModel.importBackup(it) },
-                                onClearStatus = { viewModel.clearBackupStatus() }
-                            )
-                        }
-                        StaffTab.KIOSK_SETTINGS -> {
-                            KioskSettingsScreen(
-                                securityManager = viewModel.securityManager,
-                                isLockTaskActive = viewModel.isLockTaskActive.collectAsState().value,
-                                onToggleLockTask = { active -> viewModel.setLockTaskActive(active) }
-                            )
-                        }
-                    }
+                    contentSlot()
                 }
             }
         } else {
+            // Wide Tablet Layout: 300dp Left Sidebar + Content
             Row(modifier = Modifier.fillMaxSize()) {
                 Surface(
                     modifier = Modifier
@@ -196,176 +205,105 @@ fun StaffDashboardScreen(
                     color = Color.White,
                     shadowElevation = 4.dp
                 ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f, fill = false)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    // Header Brand
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+                        verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(44.dp)
-                                .background(DssPrimary, RoundedCornerShape(10.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_settings),
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(28.dp)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column {
-                            Text(
-                                text = "STAFF CONTROL",
-                                style = DssTypography.titleMedium.copy(
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = DssTextPrimary
-                                )
-                            )
-                            Text(
-                                text = "Administration Suite",
-                                style = DssTypography.bodyMedium.copy(fontSize = 14.sp)
-                            )
-                        }
-                    }
-
-                    Divider(color = Color(0xFFE2E8F0), thickness = 2.dp)
-
-                    // Navigation Tabs
-                    val navItems = listOf(
-                        Triple(StaffTab.SCHEDULE_ORGANIZER, "Schedule Organizer", R.drawable.ic_check),
-                        Triple(StaffTab.TEMPLATES, "Template Builder", R.drawable.ic_photo),
-                        Triple(StaffTab.LIVE_PREVIEW, "Live Preview Sandbox", R.drawable.ic_volume_up),
-                        Triple(StaffTab.TASK_RECOVERY, "Task Recovery & Reset", R.drawable.ic_refresh),
-                        Triple(StaffTab.BACKUP_RESTORE, "Backup & Restore", R.drawable.ic_backup),
-                        Triple(StaffTab.KIOSK_SETTINGS, "Kiosk & Security", R.drawable.ic_lock)
-                    )
-
-                    navItems.forEach { (tab, label, iconRes) ->
-                        val isSelected = currentTab == tab
-                        val bg = if (isSelected) DssPrimary else Color.Transparent
-                        val contentColor = if (isSelected) Color.White else DssTextPrimary
-
-                        Box(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(bg)
-                                .clickable { viewModel.selectTab(tab) }
-                                .padding(horizontal = 16.dp, vertical = 14.dp),
-                            contentAlignment = Alignment.CenterStart
+                                .weight(1f, fill = false)
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(14.dp)
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    painter = painterResource(id = iconRes),
-                                    contentDescription = null,
-                                    tint = contentColor,
-                                    modifier = Modifier.size(24.dp)
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .size(44.dp)
+                                        .background(DssPrimary, RoundedCornerShape(10.dp)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_settings),
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(28.dp)
+                                    )
+                                }
                                 Spacer(modifier = Modifier.width(12.dp))
-                                Text(
-                                    text = label,
-                                    color = contentColor,
-                                    fontSize = 16.sp,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                                )
+                                Column {
+                                    Text(
+                                        text = "STAFF CONTROL",
+                                        style = DssTypography.titleMedium.copy(
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = DssTextPrimary
+                                        )
+                                    )
+                                    Text(
+                                        text = "Administration Suite",
+                                        style = DssTypography.bodyMedium.copy(fontSize = 14.sp)
+                                    )
+                                }
+                            }
+
+                            Divider(color = Color(0xFFE2E8F0), thickness = 2.dp)
+
+                            navItems.forEach { (tab, label, iconRes) ->
+                                val isSelected = currentTab == tab
+                                val bg = if (isSelected) DssPrimary else Color.Transparent
+                                val contentColor = if (isSelected) Color.White else DssTextPrimary
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(bg)
+                                        .clickable { viewModel.selectTab(tab) }
+                                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                                    contentAlignment = Alignment.CenterStart
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            painter = painterResource(id = iconRes),
+                                            contentDescription = null,
+                                            tint = contentColor,
+                                            modifier = Modifier.size(24.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Text(
+                                            text = label,
+                                            color = contentColor,
+                                            fontSize = 16.sp,
+                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                        )
+                                    }
+                                }
                             }
                         }
+
+                        DssBigButton(
+                            text = "EXIT TO WORKSTATION",
+                            onClick = onExitStaff,
+                            variant = DssButtonVariant.SECONDARY,
+                            minHeight = 64.dp,
+                            fontSize = 16.sp,
+                            iconResId = R.drawable.ic_arrow_back,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
 
-                // Return to Learner Flow Button
-                DssBigButton(
-                    text = "EXIT TO WORKSTATION",
-                    onClick = onExitStaff,
-                    variant = DssButtonVariant.SECONDARY,
-                    minHeight = 64.dp,
-                    fontSize = 16.sp,
-                    iconResId = R.drawable.ic_arrow_back,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
-
-        // Right Content Area
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-        ) {
-            when (currentTab) {
-                StaffTab.SCHEDULE_ORGANIZER -> {
-                    ScheduleOrganizerScreen(
-                        scheduleList = scheduleList,
-                        allTemplates = templates,
-                        onAddTemplate = { templateId, customTitle -> viewModel.addTemplateToQueue(templateId, customTitle) },
-                        onRenameItem = { scheduleId, newTitle -> viewModel.renameScheduleItem(scheduleId, newTitle) },
-                        onMoveUp = { viewModel.moveScheduleItemUp(it) },
-                        onMoveDown = { viewModel.moveScheduleItemDown(it) },
-                        onRemoveItem = { viewModel.removeScheduleItem(it) },
-                        onClearSchedule = { viewModel.clearDailySchedule() }
-                    )
-                }
-                StaffTab.TEMPLATES -> {
-                    TemplateBuilderScreen(
-                        templates = templates,
-                        editingTemplate = editingTemplate,
-                        onStartNew = { viewModel.startNewTemplate() },
-                        onEdit = { viewModel.editTemplate(it) },
-                        onDuplicate = { viewModel.duplicateTemplate(it) },
-                        onDelete = { viewModel.deleteTemplate(it) },
-                        onSaveTemplate = { title, desc, mins, help, comp, steps, check ->
-                            viewModel.saveEditingTemplate(title, desc, mins, help, comp, steps, check)
-                        },
-                        onCancelEditing = { viewModel.cancelTemplateEditing() }
-                    )
-                }
-                StaffTab.LIVE_PREVIEW -> {
-                    LivePreviewScreen(
-                        templates = templates,
-                        ttsHelper = ttsHelper,
-                        onExitPreview = { viewModel.selectTab(StaffTab.TEMPLATES) }
-                    )
-                }
-                StaffTab.TASK_RECOVERY -> {
-                    TaskRecoveryScreen(
-                        scheduleList = scheduleList,
-                        onResetToStep1 = { viewModel.resetScheduleToStep1(it) },
-                        onJumpToStep = { id, step -> viewModel.jumpScheduleToStep(id, step) },
-                        onForceComplete = { viewModel.forceCompleteSchedule(it) }
-                    )
-                }
-                StaffTab.BACKUP_RESTORE -> {
-                    BackupRestoreScreen(
-                        backupStatus = backupStatus,
-                        onExport = { viewModel.exportBackup(it) },
-                        onImport = { viewModel.importBackup(it) },
-                        onClearStatus = { viewModel.clearBackupStatus() }
-                    )
-                }
-                StaffTab.KIOSK_SETTINGS -> {
-                    KioskSettingsScreen(
-                        securityManager = viewModel.securityManager
-                    )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                ) {
+                    contentSlot()
                 }
             }
         }
-    }
-}
-
     }
 }
