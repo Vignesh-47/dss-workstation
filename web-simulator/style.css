@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 /* DSS Workstation Web Simulator - High-Contrast Accessible Design System */
 :root {
   --dss-primary: #1E40AF;
@@ -1510,4 +1512,224 @@ body.standalone-app .tablet-screen {
     font-size: 11px !important;
     height: 36px !important;
   }
+}
+
+/* ==========================================================================
+   Clean & Modern UI Refinements (Inter font, subtle elevation, micro-interactions)
+   ========================================================================== */
+
+:root {
+  --dss-font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+body, button, input, select, textarea {
+  font-family: var(--dss-font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Live green pulse dot in Workstation badge */
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  display: inline-block;
+  margin-right: 6px;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  animation: livePulse 2s infinite ease-in-out;
+  vertical-align: middle;
+}
+@keyframes livePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.6; }
+}
+
+/* Left Rail Active Glowing Accent Bar */
+.rail-btn {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rail-btn:hover:not(.active) {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+.rail-btn:active {
+  transform: scale(0.97);
+}
+.rail-btn.active {
+  background: #0D7A75 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 16px rgba(13, 122, 117, 0.45) !important;
+}
+.rail-btn.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  background: #2DD4BF;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 8px rgba(45, 212, 191, 0.8);
+}
+
+/* Frosted glass top header */
+.workstation-top-header {
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+/* Elevated Shift Schedule Task Cards */
+.today-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.task-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 20px !important;
+  padding: 20px 26px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer;
+}
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07) !important;
+  border-color: #CBD5E1 !important;
+}
+.task-card.active {
+  background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%) !important;
+  border: 2px solid #0D7A75 !important;
+  box-shadow: 0 8px 25px rgba(13, 122, 117, 0.15) !important;
+}
+
+/* Modern Rounded-xl Order Badge */
+.task-order-badge {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 14px !important;
+  background: #F1F5F9 !important;
+  color: #0F172A !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  transition: all 0.2s;
+}
+.task-card.active .task-order-badge {
+  background: #0D7A75 !important;
+  color: #FFFFFF !important;
+}
+.task-card.completed .task-order-badge {
+  background: #DCFCE7 !important;
+  color: #166534 !important;
+}
+
+/* Clean Button Styling & Micro-Interactions */
+.dss-btn {
+  border-radius: 14px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: none !important;
+}
+.dss-btn:hover:not(:disabled) {
+  transform: translateY(-1.5px);
+}
+.dss-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.dss-btn-success {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35) !important;
+  color: #FFFFFF !important;
+}
+.dss-btn-success:hover:not(:disabled) {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.45) !important;
+}
+.dss-btn-primary {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+  color: #FFFFFF !important;
+}
+.dss-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45) !important;
+}
+.dss-btn-warning {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35) !important;
+  color: #FFFFFF !important;
+}
+.dss-btn-secondary {
+  background: #F8FAFC !important;
+  border: 1.5px solid #CBD5E1 !important;
+  color: #334155 !important;
+}
+.dss-btn-secondary:hover:not(:disabled) {
+  background: #F1F5F9 !important;
+  border-color: #94A3B8 !important;
+  color: #0F172A !important;
+}
+
+/* HOW Screen Step Image & Audio Card */
+.how-image-col {
+  border: 2px solid #E2E8F0 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05) !important;
+  background: #FFFFFF !important;
+  padding: 16px !important;
+}
+.instruction-box {
+  border-radius: 18px !important;
+  border: 2px solid #E2E8F0 !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
+  padding: 24px !important;
+  line-height: 1.4 !important;
+}
+.audio-btn {
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%) !important;
+  border: 1.5px solid #BFDBFE !important;
+  color: #1E40AF !important;
+  font-weight: 800 !important;
+  transition: all 0.2s !important;
+}
+.audio-btn:hover {
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%) !important;
+  transform: translateY(-1px);
+}
+
+/* CHECK Screen Checklist Cards */
+.check-card {
+  border-radius: 16px !important;
+  border: 1.5px solid #E2E8F0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.check-card:hover {
+  border-color: #CBD5E1 !important;
+  transform: translateY(-1px);
+}
+.check-card.checked {
+  background: #F0FDF4 !important;
+  border-color: #10B981 !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15) !important;
+}
+.check-box-target {
+  border-radius: 10px !important;
+}
+
+/* DONE Screen Celebration Card */
+.completion-phrase-card {
+  border-radius: 20px !important;
+  border: 2px solid #A7F3D0 !important;
+  background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%) !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.12) !important;
 }
