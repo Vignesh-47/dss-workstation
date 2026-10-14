@@ -60,7 +60,7 @@ class StaffViewModel(
             var targetTemplateId = templateId
             val trimmedTitle = customTitle?.trim()
             if (!trimmedTitle.isNullOrEmpty()) {
-                val existing = taskRepository.getTemplateWithDetails(templateId)
+                val existing = taskRepository.getTemplateWithDetailsSync(templateId)
                 if (existing != null && existing.template.title != trimmedTitle) {
                     val newId = UUID.randomUUID().toString()
                     val newTemplate = existing.template.copy(id = newId, title = trimmedTitle)
