@@ -49,6 +49,22 @@ fun HelpDialog(
                 )
                 .padding(36.dp)
         ) {
+            // Close Cross Button in Top-Right
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(44.dp)
+                    .background(Color(0xFFF1F5F9), RoundedCornerShape(22.dp))
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_close),
+                    contentDescription = "Close Help",
+                    tint = Color(0xFF64748B),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)

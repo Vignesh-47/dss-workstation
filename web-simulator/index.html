@@ -148,7 +148,11 @@
 
         <!-- "I Need Help" Assistance Modal Overlay -->
         <div class="modal-overlay" id="help-modal" style="display:none;">
-          <div class="help-modal-box">
+          <div class="help-modal-box" style="position:relative;">
+            <!-- Close Cross Button -->
+            <button class="modal-close-btn" onclick="closeHelp()" aria-label="Close help modal">
+              &times;
+            </button>
             <div class="help-alert-badge">🚨 ASSISTANCE REQUESTED</div>
             <div class="help-phrase-box" id="help-text">"I need help with this step. Please assist me."</div>
             <p style="font-size:22px; color:var(--dss-text-secondary); text-align:center;">
