@@ -116,7 +116,7 @@ fun DoneScreen(
                     )
 
                     Text(
-                        text = ""$completionPhrase"",
+                    text = "\"$completionPhrase\"",
                         style = DssTypography.titleLarge.copy(
                             fontSize = if (isCompact) 20.sp else 32.sp,
                             fontWeight = FontWeight.Bold,
