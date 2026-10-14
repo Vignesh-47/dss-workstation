@@ -1,0 +1,66 @@
+name: Build & Release Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Build Debug APK
+        run: gradle :app:assembleDebug --stacktrace --no-daemon
+
+      - name: Rename APK for Sharing
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk dss-workstation-v1.0.apk
+
+      - name: Upload APK to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dss-workstation-apk
+          path: dss-workstation-v1.0.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Create or Update GitHub Release with APK
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.0-apk
+          name: "DSS Workstation v1.0.0 (Android APK)"
+          body: |
+            ### 📱 DSS Task-Guidance Tablet Workstation APK
+            Direct download for the standalone Android `.apk` installable on 10–11" tablets.
+            
+            #### How to Install on Tablet:
+            1. Tap `dss-workstation-v1.0.apk` below on your Android tablet.
+            2. Open the downloaded file to install (enable "Install unknown apps" if prompted).
+            3. Open the app to launch the workstation kiosk!
+          files: dss-workstation-v1.0.apk
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
