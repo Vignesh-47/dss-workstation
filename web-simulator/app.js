@@ -247,14 +247,35 @@ function toggleAudioMute() {
 
 // Stage Progress Indicator Bar
 function renderTopBar() {
-  const stages = ["TODAY", "NOW", "HOW", "CHECK", "DONE", "NEXT"];
+  const stageOrder = ["TODAY", "NOW", "HOW", "CHECK", "DONE", "NEXT"];
+  const currentIdx = stageOrder.indexOf(currentStage);
+
+  // Update left navigation rail buttons
+  stageOrder.forEach((stage, idx) => {
+    const btn = document.getElementById("rail-btn-" + stage);
+    if (btn) {
+      if (stage === currentStage) {
+        btn.classList.add("active");
+        btn.classList.remove("completed");
+      } else if (idx < currentIdx) {
+        btn.classList.remove("active");
+        btn.classList.add("completed");
+      } else {
+        btn.classList.remove("active");
+        btn.classList.remove("completed");
+      }
+    }
+  });
+
+  // Legacy container support if present
   const container = document.getElementById("stage-pills");
-  if (!container) return;
-  container.innerHTML = stages.map(stage => {
-    const isAct = stage === currentStage;
-    const isComp = stages.indexOf(stage) < stages.indexOf(currentStage);
-    return `<div class="stage-pill ${isAct ? 'active' : ''} ${isComp ? 'completed' : ''}" onclick="goToStage('${stage}')">${stage}</div>`;
-  }).join("");
+  if (container) {
+    container.innerHTML = stageOrder.map((stage, idx) => {
+      const isAct = stage === currentStage;
+      const isComp = idx < currentIdx;
+      return '<div class="stage-pill ' + (isAct ? 'active' : '') + ' ' + (isComp ? 'completed' : '') + '" onclick="goToStage(\'' + stage + '\')">' + stage + '</div>';
+    }).join("");
+  }
 }
 
 function goToStage(stage) {
