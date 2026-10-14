@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -196,45 +196,75 @@
           <main class="staff-content-area" id="staff-content"></main>
         </div>
 
-        <!-- iOS Safari Add to Home Screen Modal -->
-        <div class="modal-overlay" id="ios-install-modal" style="display:none; z-index:2000;">
-          <div class="pin-pad-box" style="width: 480px; max-width: 92%; text-align: left; padding: 26px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-              <div style="display:flex; align-items:center; gap:12px;">
-                <img src="/assets/icon-192.png" style="width:44px; height:44px; border-radius:10px;" alt="DSS App">
-                <div>
-                  <h3 style="font-size:18px; font-weight:900; margin:0;">Install on iPad / iPhone</h3>
-                  <p style="font-size:13px; color:var(--dss-text-secondary); margin:0;">Runs standalone full-screen with offline support</p>
-                </div>
-              </div>
-              <button onclick="closeIosInstallModal()" style="background:none; border:none; font-size:26px; cursor:pointer; color:#94A3B8; line-height:1;">&times;</button>
-            </div>
-            
-            <div style="background:#F8FAFC; border-radius:14px; padding:18px; border:1px solid #E2E8F0; margin-bottom:20px; color:#1E293B;">
-              <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
-                <span style="background:#2563EB; color:#FFF; width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex-shrink:0;">1</span>
-                <span style="font-size:15px; font-weight:700;">In <strong>Safari</strong>, tap the <strong>Share</strong> button (📤 or ⎋)</span>
-              </div>
-              <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
-                <span style="background:#2563EB; color:#FFF; width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex-shrink:0;">2</span>
-                <span style="font-size:15px; font-weight:700;">Scroll down and tap <strong>"Add to Home Screen"</strong> (➕)</span>
-              </div>
-              <div style="display:flex; align-items:center; gap:12px;">
-                <span style="background:#2563EB; color:#FFF; width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex-shrink:0;">3</span>
-                <span style="font-size:15px; font-weight:700;">Tap <strong>"Add"</strong> in the top-right corner</span>
-              </div>
-            </div>
-            
-            <button class="dss-btn dss-btn-primary" onclick="closeIosInstallModal()" style="width:100%; min-height:50px; font-size:16px;">
-              GOT IT
-            </button>
-          </div>
-        </div>
-
         <!-- Toast Notification Container -->
         <div id="toast-container"></div>
 
       </div>
+    </div>
+  </div>
+
+  <!-- Universal Install Guide Modal (Full-Screen Overlay) -->
+  <div class="modal-overlay" id="install-guide-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:99999; align-items:center; justify-content:center;">
+    <div style="background:#FFFFFF; border-radius:24px; width:520px; max-width:92%; padding:28px; box-shadow:0 25px 60px rgba(0,0,0,0.5); color:#0F172A; text-align:left;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <img src="/assets/icon-192.png" style="width:46px; height:46px; border-radius:12px;" alt="DSS Workstation">
+          <div>
+            <h3 style="font-size:18px; font-weight:800; margin:0;">Install DSS Workstation</h3>
+            <p style="font-size:13px; color:#64748B; margin:0;">Works on iPad (iOS) and Android tablets</p>
+          </div>
+        </div>
+        <button onclick="closeInstallModal()" style="background:none; border:none; font-size:26px; cursor:pointer; color:#94A3B8; line-height:1;">&times;</button>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div style="display:flex; background:#F1F5F9; border-radius:12px; padding:4px; gap:4px; margin-bottom:16px;">
+        <button id="modal-tab-ios" onclick="switchInstallTab('ios')" style="flex:1; border:none; padding:9px 12px; border-radius:9px; font-weight:800; font-size:13px; cursor:pointer; background:#2563EB; color:#FFF;">
+          🍏 Apple iPad (iOS)
+        </button>
+        <button id="modal-tab-android" onclick="switchInstallTab('android')" style="flex:1; border:none; padding:9px 12px; border-radius:9px; font-weight:800; font-size:13px; cursor:pointer; background:transparent; color:#64748B;">
+          🤖 Android Tablet
+        </button>
+      </div>
+
+      <!-- iOS Instructions Tab Content -->
+      <div id="modal-content-ios" style="display:block;">
+        <div style="background:#F8FAFC; border-radius:14px; padding:16px; border:1px solid #E2E8F0; margin-bottom:18px;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <span style="background:#2563EB; color:#FFF; width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0;">1</span>
+            <span style="font-size:14px; font-weight:700; color:#1E293B;">Open in <strong>Safari</strong> on your iPad</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <span style="background:#2563EB; color:#FFF; width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0;">2</span>
+            <span style="font-size:14px; font-weight:700; color:#1E293B;">Tap the <strong>Share</strong> button (📤) in the Safari toolbar</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="background:#2563EB; color:#FFF; width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0;">3</span>
+            <span style="font-size:14px; font-weight:700; color:#1E293B;">Tap <strong>"Add to Home Screen"</strong> (➕), then tap <strong>Add</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Android Instructions Tab Content -->
+      <div id="modal-content-android" style="display:none;">
+        <div style="background:#F8FAFC; border-radius:14px; padding:16px; border:1px solid #E2E8F0; margin-bottom:18px;">
+          <p style="font-size:13px; color:#475569; margin-bottom:12px; line-height:1.45;">
+            Choose your preferred installation method for Android:
+          </p>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button onclick="triggerNativePwa()" style="background:#10B981; color:#FFF; border:none; padding:12px; border-radius:10px; font-weight:800; font-size:14px; cursor:pointer;">
+              📲 One-Tap Chrome PWA Install
+            </button>
+            <a href="/apk" style="background:#2563EB; color:#FFF; text-decoration:none; padding:12px; border-radius:10px; font-weight:800; font-size:14px; text-align:center; display:block;">
+              📥 Download Native APK (18.2 MB)
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <button class="dss-btn dss-btn-secondary" onclick="closeInstallModal()" style="width:100%; min-height:48px; font-size:15px;">
+        CLOSE
+      </button>
     </div>
   </div>
 

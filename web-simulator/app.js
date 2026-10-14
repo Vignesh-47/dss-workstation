@@ -1130,7 +1130,8 @@ window.addEventListener('appinstalled', () => {
   deferredPrompt = null;
   const btn = document.getElementById('btn-pwa-install');
   if (btn) btn.style.display = 'none';
-  showToast("DSS Workstation installed to your home screen!");
+  closeInstallModal();
+  showToast("DSS Workstation installed to your tablet!");
 });
 
 function triggerPwaInstall() {
@@ -1142,21 +1143,61 @@ function triggerPwaInstall() {
       }
       deferredPrompt = null;
     });
-  } else if (isIosDevice()) {
-    openIosInstallModal();
   } else {
-    showToast("To install on your tablet: open your browser menu (⋮) and tap 'Install App' or 'Add to Home Screen'.");
+    openInstallModal();
   }
 }
 
-function openIosInstallModal() {
-  const modal = document.getElementById('ios-install-modal');
-  if (modal) modal.style.display = 'flex';
+function triggerNativePwa() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      closeInstallModal();
+    });
+  } else {
+    showToast("Tap Chrome's menu (⋮) and choose 'Install App' or 'Add to Home screen'.");
+  }
 }
 
-function closeIosInstallModal() {
-  const modal = document.getElementById('ios-install-modal');
+function openInstallModal() {
+  const modal = document.getElementById('install-guide-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    if (isIosDevice()) {
+      switchInstallTab('ios');
+    } else {
+      switchInstallTab('android');
+    }
+  }
+}
+
+function closeInstallModal() {
+  const modal = document.getElementById('install-guide-modal');
   if (modal) modal.style.display = 'none';
+}
+
+function switchInstallTab(platform) {
+  const tabIos = document.getElementById('modal-tab-ios');
+  const tabAndroid = document.getElementById('modal-tab-android');
+  const contentIos = document.getElementById('modal-content-ios');
+  const contentAndroid = document.getElementById('modal-content-android');
+  if (!tabIos || !tabAndroid || !contentIos || !contentAndroid) return;
+  if (platform === 'ios') {
+    tabIos.style.background = '#2563EB';
+    tabIos.style.color = '#FFFFFF';
+    tabAndroid.style.background = 'transparent';
+    tabAndroid.style.color = '#64748B';
+    contentIos.style.display = 'block';
+    contentAndroid.style.display = 'none';
+  } else {
+    tabAndroid.style.background = '#2563EB';
+    tabAndroid.style.color = '#FFFFFF';
+    tabIos.style.background = 'transparent';
+    tabIos.style.color = '#64748B';
+    contentAndroid.style.display = 'block';
+    contentIos.style.display = 'none';
+  }
 }
 
 // Adjust UI if already in standalone app mode on iOS or Android
