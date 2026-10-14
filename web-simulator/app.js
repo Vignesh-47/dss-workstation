@@ -1085,3 +1085,87 @@ window.addEventListener("DOMContentLoaded", () => {
   initHumanVoice();
   renderApp();
 });
+
+// ==========================================================================
+// PWA & Service Worker Registration (Android & iOS Cross-Platform Support)
+// ==========================================================================
+
+// Register Service Worker for offline workstation kiosk use
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then((reg) => {
+      console.log('[DSS PWA] Service Worker active, scope:', reg.scope);
+    }).catch((err) => {
+      console.warn('[DSS PWA] Service Worker registration failed:', err);
+    });
+  });
+}
+
+let deferredPrompt = null;
+
+const isIosDevice = () => {
+  const ua = window.navigator.userAgent.toLowerCase();
+  return /iphone|ipad|ipod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+};
+
+const isStandaloneMode = () => {
+  return ('standalone' in window.navigator && window.navigator.standalone) ||
+         window.matchMedia('(display-mode: standalone)').matches ||
+         window.matchMedia('(display-mode: fullscreen)').matches;
+};
+
+// Listen for Android / Chrome / Edge install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('btn-pwa-install');
+  if (btn && !isStandaloneMode()) {
+    btn.style.display = 'inline-flex';
+  }
+});
+
+// App installed event
+window.addEventListener('appinstalled', () => {
+  console.log('[DSS PWA] Application installed successfully!');
+  deferredPrompt = null;
+  const btn = document.getElementById('btn-pwa-install');
+  if (btn) btn.style.display = 'none';
+  showToast("DSS Workstation installed to your home screen!");
+});
+
+function triggerPwaInstall() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((result) => {
+      if (result.outcome === 'accepted') {
+        console.log('[DSS PWA] User accepted installation');
+      }
+      deferredPrompt = null;
+    });
+  } else if (isIosDevice()) {
+    openIosInstallModal();
+  } else {
+    showToast("To install on your tablet: open your browser menu (⋮) and tap 'Install App' or 'Add to Home Screen'.");
+  }
+}
+
+function openIosInstallModal() {
+  const modal = document.getElementById('ios-install-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeIosInstallModal() {
+  const modal = document.getElementById('ios-install-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+// Adjust UI if already in standalone app mode on iOS or Android
+window.addEventListener('DOMContentLoaded', () => {
+  if (isStandaloneMode()) {
+    document.body.classList.add('standalone-app');
+    const pwaBtn = document.getElementById('btn-pwa-install');
+    if (pwaBtn) pwaBtn.style.display = 'none';
+    const frame = document.getElementById('tablet-frame');
+    if (frame) frame.classList.add('full-window-mode');
+  }
+});
